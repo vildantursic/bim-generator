@@ -1,0 +1,28 @@
+// toolbar
+.bim-icon {
+  padding: 0 14px;
+}
+
+.bim-spacer {
+  flex: 1 1 auto;
+}
+
+
+// content
+.bim-content {
+  margin: 25px 150px;
+
+  .bim-card {
+    padding: 15px;
+  }
+}
+
+
+// login
+.login {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

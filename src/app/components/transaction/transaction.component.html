@@ -1,0 +1,39 @@
+<table class="bim-full-width" cellspacing="0">
+  <tr>
+    <td>
+      <md-checkbox (change)="selected = $event">Import from files</md-checkbox>
+    </td>
+    <td>
+      <md-input-container class="bim-full-width">
+        <input mdInput placeholder="Entity">
+      </md-input-container>
+    </td>
+    <td>
+      <md-input-container class="bim-full-width">
+        <input mdInput placeholder="Checkout">
+      </md-input-container>
+    </td>
+  </tr>
+  <tr *ngIf="selected">
+    <td>
+      <md-input-container class="bim-full-width">
+        <input type="number" mdInput placeholder="Number of Chunks">
+      </md-input-container>
+    </td>
+    <td>
+      <md-input-container class="bim-full-width">
+        <input type="number" mdInput placeholder="Number of Items in Chunk">
+      </md-input-container>
+    </td>
+  </tr>
+  <tr *ngIf="!selected">
+    <td>
+      <input type="file">
+    </td>
+  </tr>
+  <tr>
+    <button md-raised-button color="accent">Sync</button>
+  </tr>
+</table>
+
+<app-bim-list></app-bim-list>

@@ -4,17 +4,20 @@ import { MaterialDesignModule } from './material-design/material-design.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import {BimListComponent} from "./bim-list/bim-list.component";
+import { FileUploadComponent } from './file-upload/file-upload.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    BimListComponent
+    BimListComponent,
+    FileUploadComponent
   ],
   exports: [
     MaterialDesignModule,
     LoginComponent,
-    BimListComponent
+    BimListComponent,
+    FileUploadComponent
   ],
   imports: [
     CommonModule,

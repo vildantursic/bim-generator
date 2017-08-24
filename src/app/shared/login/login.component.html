@@ -1,6 +1,6 @@
 <md-card class="bim-form">
   <div class="bim-full-width">
-    <md-select placeholder="Choose Server" class="bim-select-full-width">
+    <md-select placeholder="Choose Server" class="bim-select-full-width" (change)="onServerChange($event)" [(ngModel)]="server">
       <md-option *ngFor="let server of servers" [value]="server.url">
         {{ server.name }}
       </md-option>
@@ -18,5 +18,5 @@
   <md-input-container class="bim-full-width">
     <input type="password" mdInput placeholder="Password" [(ngModel)]="user.password">
   </md-input-container>
-  <button md-raised-button color="primary" (click)="login()">Login</button>
+  <button md-raised-button color="primary" [disabled]="user.email === '' && user.password === ''" (click)="login()">Login</button>
 </md-card>

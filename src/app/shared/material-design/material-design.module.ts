@@ -23,6 +23,7 @@ import {
   MdButtonToggleModule,
   MdSliderModule,
   MdAutocompleteModule,
+  MdSlideToggleModule
 } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -54,6 +55,7 @@ import { BrowserModule } from '@angular/platform-browser';
     MdButtonToggleModule,
     MdSliderModule,
     MdAutocompleteModule,
+    MdSlideToggleModule
   ],
   imports: [
     BrowserModule,

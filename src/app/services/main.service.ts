@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
 import { HelperService } from './helper/helper.service';
+import {config} from "../app.config";
 
 @Injectable()
 export class MainService {
@@ -13,7 +14,7 @@ export class MainService {
   constructor(private http: Http, private helper: HelperService) {}
 
   createAuthorizationHeader(headers: Headers) {
-    headers.append('auth', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5OTU5OGNiMzQ2MTY0NjBiZDI1NTMzZiIsInNjb3BlIjpbXSwiaWF0IjoxNTAyOTc2MjIwLCJleHAiOjE1MDY4NjQyMjB9.Jqp4aC22Fjy2tehevNpKb1rpe3vTFrKNrivd2_rRIBg');
+    headers.append('auth', config.auth);
   }
 
   /**

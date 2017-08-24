@@ -1,3 +1,5 @@
+import { config } from '../../app.config';
+
 export class HelperService {
 
   /**
@@ -10,12 +12,13 @@ export class HelperService {
    */
   generateRoute(service: string, route: string, queryParams?: {}): string {
 
-    let rootUrl = '';
-    if (service === 'auth') {
-      rootUrl = 'http://localhost:3000';
-    } else {
-      rootUrl = 'http://localhost:3001';
-    }
+    let api = config.api;
+    let rootUrl = api;
+    // if (service === 'auth') {
+    //   rootUrl = 'http://localhost:3000';
+    // } else {
+    //   rootUrl = 'http://localhost:3001';
+    // }
 
     let reqUrl = `${rootUrl}/services/${service}/v1/${route}`;
     if (queryParams) {

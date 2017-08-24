@@ -12,6 +12,6 @@ export class EntityService {
    * @returns {Observable<any>}
    */
   getEntities(): Observable<any> {
-    return this.service.get('data', 'complex/dac1d3d6-1511-4f08-a62e-610b4132440b/entity');
+    return this.service.get('data', 'complex/4acb6bff-5b83-4c0d-bb1f-7f4e049240be/entity');
   }
 }

@@ -40,8 +40,8 @@ export class TransactionService {
    * @param data
    * @returns {any}
    */
-  finalizeTransaction(guid, data): Observable<any> {
-    return this.service.post('data', `transaction/${guid}`, data)
+  finalizeTransaction(guid): Observable<any> {
+    return this.service.post('data', `transaction/${guid}`)
   }
 
   /**
@@ -50,7 +50,7 @@ export class TransactionService {
    * @param data
    * @returns {any}
    */
-  cancelTransaction(guid, data): Observable<any> {
-    return this.service.post('data', `transaction/${guid}`, data)
+  cancelTransaction(guid): Observable<any> {
+    return this.service.post('data', `transaction/${guid}`)
   }
 }

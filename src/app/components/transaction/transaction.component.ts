@@ -50,6 +50,8 @@ export class TransactionComponent implements OnInit {
   generateTransaction(): void {
     this.transaction = this.generator.generateTransaction(this.transactionData);
     this.generateChunks(this.transaction)
+
+    this.initializeTransaction()
   }
 
   generateChunks(transaction): void {
@@ -65,7 +67,9 @@ export class TransactionComponent implements OnInit {
   }
 
   initializeTransaction(): void {
-    this.transactionService.initializeTransaction(this.transaction);
+    this.transactionService.initializeTransaction(this.transaction).subscribe(response => {
+      this.getTransactions();
+    });
   }
 
   sendChunks(): void {

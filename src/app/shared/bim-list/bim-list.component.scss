@@ -1,0 +1,13 @@
+:host {
+  height: 100%;
+  overflow: auto;
+}
+
+.bim-list-item {
+  transition: ease .3s;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0,0,0,0.1);
+  }
+}

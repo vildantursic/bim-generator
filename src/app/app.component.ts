@@ -17,7 +17,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   login(data): void {
-    // TODO change on server response
     this.isLoggedIn = true;
     this.authService.login(data).subscribe((response: any) => {
       config.auth = response.jwt;

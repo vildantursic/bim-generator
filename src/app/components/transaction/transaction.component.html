@@ -12,24 +12,14 @@
     <table class="bim-full-width" cellspacing="0">
       <tr>
         <td>
-          <md-select placeholder="Choose Checkout" class="bim-select-full-width" (change)="onCheckoutSelected($event)">
+          <md-select placeholder="Choose Checkout" class="bim-full-width" (change)="onCheckoutSelected($event)">
             <md-option *ngFor="let checkout of checkouts" [value]="checkout">
               {{ checkout.name }}
             </md-option>
           </md-select>
         </td>
-        <!--<td>-->
-          <!--<md-input-container class="bim-full-width">-->
-            <!--<input mdInput placeholder="Entity" [(ngModel)]="transactionData.entityGUID">-->
-          <!--</md-input-container>-->
-        <!--</td>-->
-        <!--<td>-->
-          <!--<md-input-container class="bim-full-width">-->
-            <!--<input mdInput placeholder="Checkout" [(ngModel)]="transactionData.checkoutGUID">-->
-          <!--</md-input-container>-->
-        <!--</td>-->
       </tr>
-      <tr>
+      <tr class="bim-section">
         <td>
           <md-slide-toggle [(ngModel)]="fileImport">Generate Transaction</md-slide-toggle>
         </td>
@@ -51,12 +41,12 @@
           Selected {{chunkFiles.length}} Chunks
         </td>
         <td>
-          <div class="bim-file-input">
+          <div class="bim-section">
             <app-file-upload (onFilesUpload)="onFilesUpload($event)"></app-file-upload>
           </div>
         </td>
       </tr>
-      <tr>
+      <tr class="bim-section">
         <td>
           <md-slide-toggle [(ngModel)]="simulateFailure">Simulate Failure</md-slide-toggle>
         </td>

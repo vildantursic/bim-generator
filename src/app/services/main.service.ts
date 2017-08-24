@@ -49,7 +49,11 @@ export class MainService {
    */
   post(service: string, route: string, data?: {}, queryParams?: {}): any {
 
-    return this.http.post(this.helper.generateRoute(service, route, queryParams), data)
+    const headers = new Headers();
+    this.createAuthorizationHeader(headers)
+    return this.http.post(this.helper.generateRoute(service, route, queryParams), data, {
+      headers: headers
+    })
       .map((res: Response) => res.json())
       .catch((err: Error) => {
         return Observable.of(err)
@@ -67,7 +71,11 @@ export class MainService {
    */
   put(service: string, route: string, data?: {}, queryParams?: {}) {
 
-    return this.http.put(this.helper.generateRoute(service, route, queryParams), data)
+    const headers = new Headers();
+    this.createAuthorizationHeader(headers)
+    return this.http.put(this.helper.generateRoute(service, route, queryParams), data, {
+      headers: headers
+    })
       .map((res: Response) => res.json())
       .catch((err: Error) => {
         return Observable.of(err)
@@ -84,7 +92,11 @@ export class MainService {
    */
   delete(service: string, route: string, queryParams?: {}) {
 
-    return this.http.delete(this.helper.generateRoute(service, route, queryParams))
+    const headers = new Headers();
+    this.createAuthorizationHeader(headers)
+    return this.http.delete(this.helper.generateRoute(service, route, queryParams), {
+      headers: headers
+    })
       .map((res: Response) => res.json())
       .catch((err: Error) => {
         return Observable.of(err)

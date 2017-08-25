@@ -33,4 +33,25 @@ export class HelperService {
 
     return reqUrl;
   }
+
+  filterCheckoutsFromProjectData(projects: any): any {
+    let checkouts = [];
+
+    projects.forEach(project => {
+      project.checkout.forEach(checkout => {
+        checkout.name = `${project.name} | ${checkout.name}`
+        checkouts.push(checkout);
+      })
+    })
+
+    return checkouts;
+  }
+
+  downloadChunkAsFile(data): void {
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    let dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `${data.chunk}-chunk.json`);
+    dlAnchorElem.click();
+  }
 }

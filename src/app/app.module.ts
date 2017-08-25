@@ -16,9 +16,8 @@ import { AuthService } from './services/auth/auth.service';
 import { ProjectService } from './services/project/project.service';
 import { CheckoutService } from './services/checkout/checkout.service';
 import { EntityService } from './services/entity/entity.service';
-
-import Generator from './helpers/generator';
-import Helper from './helpers/helper';
+import { GeneratorService } from './services/utilities/generator/generator.service';
+import { MessageService } from './services/utilities/message/message.service';
 
 @NgModule({
   declarations: [
@@ -39,8 +38,8 @@ import Helper from './helpers/helper';
     ProjectService,
     CheckoutService,
     EntityService,
-    Generator,
-    Helper
+    GeneratorService,
+    MessageService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [AppComponent]

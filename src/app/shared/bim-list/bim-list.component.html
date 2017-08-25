@@ -1,10 +1,7 @@
 <md-list>
-  <h3 md-subheader>Transactions</h3>
   <md-list-item class="bim-list-item" *ngFor="let item of items">
     <md-chip-list>
-      <md-chip *ngIf="item?.state === 'initial'">{{item?.state}}</md-chip>
-      <md-chip *ngIf="item?.state === 'finished'" color="primary" selected="true">{{item?.state}}</md-chip>
-      <md-chip *ngIf="item?.state === 'canceled'" color="accent" selected="true">{{item?.state}}</md-chip>
+      <md-chip  [color]="setTagColor(item.state)" [selected]="isTagFinalizeOrCancel(item.state)">{{item?.state}}</md-chip>
     </md-chip-list>
     <h4 md-line>
       {{item?.guid}}
@@ -12,5 +9,16 @@
     <p md-line>
       {{item?.created}}
     </p>
+    <md-icon md-list-icon [mdMenuTriggerFor]="menu" style="float: left">menu</md-icon>
+    <md-menu #menu="mdMenu" xPosition="before">
+      <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
+              md-menu-item (click)="onFinalizeTransactionClicked.emit(item.guid)">
+        Finalize
+      </button>
+      <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
+              md-menu-item (click)="onCancelTransactionClicked.emit(item.guid)">
+        Cancel
+      </button>
+    </md-menu>
   </md-list-item>
 </md-list>

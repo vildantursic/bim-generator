@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import * as uuid from 'uuid/v4';
 
 @Injectable()
-export default class Generator {
+export class GeneratorService {
+
+  constructor() { }
 
   generateTransaction(transactionData): any {
     let Transaction = {
@@ -12,12 +14,10 @@ export default class Generator {
     }
 
     for(let i = 0; i < transactionData.chunkNumber; i++) {
-      let obj = {
+      Transaction.transactionData.push({
         "chunk": i,
         "size": +transactionData.chunkSize
-      }
-
-      Transaction.transactionData.push(obj);
+      });
     }
 
     return Transaction
@@ -66,7 +66,8 @@ export default class Generator {
         "space": "Space",
         "data": this.generateMetadata(),
         "geometry": this.generateGeometry(),
-        "material": this.generateMaterials(),
+        // "material": this.generateMaterials(),
+        "material": {},
         "object3D": {}
       }
     }

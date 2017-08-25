@@ -46,7 +46,7 @@
           </div>
         </td>
       </tr>
-      <tr class="bim-section">
+      <tr *ngIf="fileImport" class="bim-section">
         <td>
           <md-slide-toggle [(ngModel)]="simulateFailure">Simulate Failure</md-slide-toggle>
         </td>
@@ -61,7 +61,7 @@
       <tr>
         <td>
           <button *ngIf="fileImport" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
-          <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0" md-raised-button color="accent" (click)="getChunks()">Sync</button>
+          <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0" md-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
         </td>
       </tr>
     </table>
@@ -69,7 +69,10 @@
 
   <md-card class="bim-card right">
     <div>
-      <app-bim-list [items]="transactions"></app-bim-list>
+      <app-bim-list [items]="transactions"
+                    (onFinalizeTransactionClicked)="finalizeTransaction($event)"
+                    (onCancelTransactionClicked)="cancelTransaction($event)">
+      </app-bim-list>
     </div>
   </md-card>
 </div>

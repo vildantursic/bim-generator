@@ -11,7 +11,9 @@ export class AppComponent implements AfterViewInit {
 
   isLoggedIn = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {
+    this.isLoggedIn = !!localStorage.getItem('auth');
+  }
 
   ngAfterViewInit(): void {
   }
@@ -19,7 +21,7 @@ export class AppComponent implements AfterViewInit {
   login(data): void {
     this.isLoggedIn = true;
     this.authService.login(data).subscribe((response: any) => {
-      config.auth = response.jwt;
+      localStorage.setItem('auth', response.jwt);
     });
   }
 }

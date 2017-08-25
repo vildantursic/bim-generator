@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from '../../services/transaction/transaction.service';
 import { ProjectService } from '../../services/project/project.service';
-import { EntityService } from '../../services/entity/entity.service';
-import Generator from '../../helpers/generator';
-import Helper from '../../helpers/helper';
+import { GeneratorService } from '../../services/utilities/generator/generator.service';
+import { HelperService } from '../../services/helper/helper.service';
+import { MessageService } from '../../services/utilities/message/message.service';
 
 @Component({
   selector: 'app-transaction',
@@ -19,8 +19,8 @@ export class TransactionComponent implements OnInit {
 
   transactionGUID;
   transactionData = {
-    checkoutGUID: "42368359-025f-426e-a48b-9a89e9615b11",
-    entityGUID: "59ef1a21-31b2-4f92-bea8-23576b8a1f4f",
+    checkoutGUID: '',
+    entityGUID: '',
     chunkNumber: 5,
     chunkSize: 20
   };
@@ -37,10 +37,10 @@ export class TransactionComponent implements OnInit {
   chunkFiles = [];
 
   constructor(private transactionService: TransactionService,
-              private generator: Generator,
-              private helper: Helper,
+              private generator: GeneratorService,
+              private helper: HelperService,
               private projectService: ProjectService,
-              private entityService: EntityService) { }
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.getTransactions();
@@ -54,43 +54,72 @@ export class TransactionComponent implements OnInit {
     this.initializeTransaction()
   }
 
+  generateTransactionFromFiles(): void {
+    let tempTransactionChunkData = [];
+
+    this.chunks.forEach(chunk => {
+      tempTransactionChunkData.push({
+        chunk: chunk.chunk,
+        size: chunk.items.length
+      })
+    })
+    this.transaction = this.generator.generateTransaction(this.transactionData);
+    this.transaction.transactionData = tempTransactionChunkData;
+
+    this.initializeTransaction()
+  }
+
   generateChunks(transaction): void {
-    console.log('TRANSACTION', transaction)
     transaction.transactionData.forEach(data => {
       this.chunks.push(this.generator.generateChunks(data.chunk, data.size, this.chunkToFail ? this.chunkToFail : -1))
     })
-    console.log('CHUNKS', this.chunks)
   }
 
-  getChunks(): void {
-    console.log(this.chunks)
-  }
 
   initializeTransaction(): void {
     this.transactionService.initializeTransaction(this.transaction).subscribe(response => {
-      this.getTransactions();
+      if (response) {
+        this.transactionGUID = response.guid
+        this.getTransactions();
+        this.sendChunks();
+      }
     });
   }
 
   sendChunks(): void {
     if (this.transactionGUID) {
       this.chunks.forEach(chunk => {
-        this.transactionService.sendChunk(this.transactionGUID, chunk)
+        this.transactionService.sendChunk(this.transactionGUID, chunk).subscribe(response => {
+          this.progress.sent++;
+          this.getTransactions();
+          if (response.status === 400) {
+            this.helper.downloadChunkAsFile(chunk);
+          }
+        });
       });
     }
   }
 
-  finalizeTransaction(): void {
-    this.transactionService.finalizeTransaction(this.transactionGUID);
+  finalizeTransaction(transactionGUID): void {
+    this.transactionService.finalizeTransaction(transactionGUID).subscribe(response => {
+      this.messageService.show('Transaction Finalized');
+      this.getTransactions();
+      this.clearingData();
+    });
   }
 
-  cancelTransaction(): void {
-    this.transactionService.cancelTransaction(this.transactionGUID);
+  cancelTransaction(transactionGUID): void {
+    this.transactionService.cancelTransaction(transactionGUID).subscribe(response => {
+      this.messageService.show('Transaction Canceled');
+      this.getTransactions();
+      this.clearingData();
+    });
   }
 
   onFilesUpload(files): void {
     this.chunkFiles = files;
-    // console.log(this.chunkFiles);
+    this.transactionData.chunkNumber = this.chunkFiles.length;
+
     var myReader:FileReader = new FileReader();
     let chunkNumber = 0;
 
@@ -125,12 +154,14 @@ export class TransactionComponent implements OnInit {
   getTransactions(): void {
     this.transactionService.getTransactions().subscribe(response => {
       this.transactions = response.items;
-      console.log(this.transactions)
     });
   }
 
   clearingData(): void {
+    this.progress.sent = 0;
     this.chunks = [];
     this.transaction = undefined;
+    this.transactionData.chunkNumber = 5;
+    this.transactionData.chunkSize = 20;
   }
 }

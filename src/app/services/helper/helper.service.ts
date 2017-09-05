@@ -12,7 +12,7 @@ export class HelperService {
    */
   generateRoute(service: string, route: string, queryParams?: {}): string {
 
-    let rootUrl = config.api;
+    let rootUrl = localStorage.getItem('server');
     if (rootUrl === 'http://localhost') {
       if (service === 'auth') {
         rootUrl = 'http://localhost:3000';
@@ -35,23 +35,32 @@ export class HelperService {
   }
 
   filterCheckoutsFromProjectData(projects: any): any {
-    let checkouts = [];
+    const checkouts = [];
 
     projects.forEach(project => {
       project.checkout.forEach(checkout => {
-        checkout.name = `${project.name} | ${checkout.name}`
+        Object.defineProperty(checkout, 'projectGUID', {
+          enumerable: true,
+          configurable: true,
+          writable: true,
+          value: project.guid
+        });
+        checkout.name = `${project.name} | ${checkout.name}`;
         checkouts.push(checkout);
       })
     })
 
-    return checkouts;
+    return {
+      checkouts: checkouts,
+      projects: projects
+    };
   }
 
   downloadChunkAsFile(data): void {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    let dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `${data.chunk}-chunk.json`);
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute('href', dataStr);
+    dlAnchorElem.setAttribute('download', `${data.chunk}-chunk.json`);
     dlAnchorElem.click();
   }
 }

@@ -3,7 +3,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 @Component({
   selector: 'app-file-upload',
   template: `
-    <input type="file" (change)="fileChange($event)" multiple="true" placeholder="Upload file" accept=".json, .txt">
+    <input type="file" (change)="fileChange($event)" multiple="true" placeholder="Upload file" accept=".json, .txt, .js">
   `,
 })
 export class FileUploadComponent implements OnInit {

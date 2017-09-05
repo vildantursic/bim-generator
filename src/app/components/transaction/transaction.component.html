@@ -60,7 +60,7 @@
       </tr>
       <tr>
         <td>
-          <button *ngIf="fileImport" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
+          <button *ngIf="fileImport" [disabled]="selectedCheckout.checkoutGUID === '' || selectedCheckout.projectGUID === ''" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
           <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0" md-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
         </td>
       </tr>

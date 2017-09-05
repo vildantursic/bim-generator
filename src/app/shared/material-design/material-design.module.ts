@@ -25,7 +25,6 @@ import {
   MdAutocompleteModule,
   MdSlideToggleModule
 } from '@angular/material';
-import { CdkTableModule } from '@angular/cdk';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -42,7 +41,6 @@ import { BrowserModule } from '@angular/platform-browser';
     MdGridListModule,
     MdChipsModule,
     MdTableModule,
-    CdkTableModule,
     MdProgressBarModule,
     MdDialogModule,
     MdSortModule,

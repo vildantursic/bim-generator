@@ -9,48 +9,56 @@ export class TransactionService {
 
   /**
    * Gets array of transactions
+   * @param projectGUID
+   * @param checkoutGUID
    * @returns {Observable<any>}
    */
-  getTransactions(): Observable<any> {
-    return this.service.get('data', 'transaction');
+  getTransactions(projectGUID, checkoutGUID): Observable<any> {
+    return this.service.get('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction`);
   }
 
   /**
    * Initialize transaction
+   * @param projectGUID
+   * @param checkoutGUID
    * @param data
    * @returns {any}
    */
-  initializeTransaction(data): Observable<any> {
-    return this.service.post('data', `transaction`, data)
+  initializeTransaction(projectGUID, checkoutGUID, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction`, data)
   }
 
   /**
    * Send chunk in transaction
+   * @param projectGUID
+   * @param checkoutGUID
    * @param guid
    * @param data
    * @returns {any}
    */
-  sendChunk(guid, data): Observable<any> {
-    return this.service.post('data', `transaction/${guid}`, data)
+  sendChunk(projectGUID, checkoutGUID, guid, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}`, data)
   }
 
   /**
    * Finalize transaction
+   * @param projectGUID
+   * @param checkoutGUID
    * @param guid
-   * @param data
    * @returns {any}
    */
-  finalizeTransaction(guid): Observable<any> {
-    return this.service.post('data', `transaction/${guid}/finalize`)
+  finalizeTransaction(projectGUID, checkoutGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}/finalize`)
   }
 
   /**
    * Cancel transaction
+   * @param projectGUID
+   * @param checkoutGUID
    * @param guid
-   * @param data
    * @returns {any}
    */
-  cancelTransaction(guid): Observable<any> {
-    return this.service.post('data', `transaction/${guid}/cancel`)
+  cancelTransaction(projectGUID, checkoutGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}/cancel`)
   }
 }

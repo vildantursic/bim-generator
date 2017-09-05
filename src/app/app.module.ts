@@ -18,6 +18,7 @@ import { CheckoutService } from './services/checkout/checkout.service';
 import { EntityService } from './services/entity/entity.service';
 import { GeneratorService } from './services/utilities/generator/generator.service';
 import { MessageService } from './services/utilities/message/message.service';
+import { SocketService } from './services/socket/socket.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { MessageService } from './services/utilities/message/message.service';
     CheckoutService,
     EntityService,
     GeneratorService,
-    MessageService
+    MessageService,
+    SocketService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [AppComponent]

@@ -4,6 +4,7 @@ import { ProjectService } from '../../services/project/project.service';
 import { GeneratorService } from '../../services/utilities/generator/generator.service';
 import { HelperService } from '../../services/helper/helper.service';
 import { MessageService } from '../../services/utilities/message/message.service';
+import {SocketService} from "../../services/socket/socket.service";
 
 @Component({
   selector: 'app-transaction',
@@ -17,6 +18,12 @@ export class TransactionComponent implements OnInit {
   simulateFailure = false;
   chunkToFail;
 
+  selectedCheckout = {
+    projectGUID: '',
+    checkoutGUID: ''
+  };
+
+  job = '';
   transactionGUID;
   transactionData = {
     checkoutGUID: '',
@@ -40,11 +47,14 @@ export class TransactionComponent implements OnInit {
               private generator: GeneratorService,
               private helper: HelperService,
               private projectService: ProjectService,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private socketService: SocketService) { }
 
   ngOnInit() {
-    this.getTransactions();
     this.getProjects();
+    this.socketService.socket.on('job' + this.job, (data) => {
+      console.log(data)
+    })
   }
 
   generateTransaction(): void {
@@ -55,7 +65,7 @@ export class TransactionComponent implements OnInit {
   }
 
   generateTransactionFromFiles(): void {
-    let tempTransactionChunkData = [];
+    const tempTransactionChunkData = [];
 
     this.chunks.forEach(chunk => {
       tempTransactionChunkData.push({
@@ -75,9 +85,8 @@ export class TransactionComponent implements OnInit {
     })
   }
 
-
   initializeTransaction(): void {
-    this.transactionService.initializeTransaction(this.transaction).subscribe(response => {
+    this.transactionService.initializeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, this.transaction).subscribe(response => {
       if (response) {
         this.transactionGUID = response.guid
         this.getTransactions();
@@ -87,21 +96,22 @@ export class TransactionComponent implements OnInit {
   }
 
   sendChunks(): void {
-    if (this.transactionGUID) {
-      this.chunks.forEach(chunk => {
-        this.transactionService.sendChunk(this.transactionGUID, chunk).subscribe(response => {
-          this.progress.sent++;
-          this.getTransactions();
-          if (response.status === 400) {
-            this.helper.downloadChunkAsFile(chunk);
-          }
-        });
+    if (this.transactionGUID && this.chunks.length !== 0 && this.progress.sent < this.chunks.length) {
+      this.transactionService.sendChunk(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, this.transactionGUID, this.chunks[this.progress.sent]).subscribe(response => {
+        this.progress.sent++;
+        this.getTransactions();
+        this.sendChunks();
+        if (response.status === 400) {
+          console.log('CHUNK FAILED: ', this.chunks[this.progress.sent]);
+          console.log('RESPONSE FROM SERVER: ', response);
+          // this.helper.downloadChunkAsFile(chunk);
+        }
       });
     }
   }
 
   finalizeTransaction(transactionGUID): void {
-    this.transactionService.finalizeTransaction(transactionGUID).subscribe(response => {
+    this.transactionService.finalizeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, transactionGUID).subscribe(response => {
       this.messageService.show('Transaction Finalized');
       this.getTransactions();
       this.clearingData();
@@ -109,7 +119,7 @@ export class TransactionComponent implements OnInit {
   }
 
   cancelTransaction(transactionGUID): void {
-    this.transactionService.cancelTransaction(transactionGUID).subscribe(response => {
+    this.transactionService.cancelTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, transactionGUID).subscribe(response => {
       this.messageService.show('Transaction Canceled');
       this.getTransactions();
       this.clearingData();
@@ -120,39 +130,44 @@ export class TransactionComponent implements OnInit {
     this.chunkFiles = files;
     this.transactionData.chunkNumber = this.chunkFiles.length;
 
-    var myReader:FileReader = new FileReader();
+    const myReader: FileReader = new FileReader();
     let chunkNumber = 0;
 
     myReader.onloadend = (e) => {
-      this.chunks.push({
-        chunk: ++chunkNumber,
-        items: JSON.parse(myReader.result)
-      });
+      ++chunkNumber
+
+      this.chunks.push(JSON.parse(myReader.result));
       if (chunkNumber < files.length) {
         readChunk(chunkNumber);
       }
       // delete files[0];
     }
 
-    let readChunk = (fileNumber = 0) => {
+    const readChunk = (fileNumber = 0) => {
       myReader.readAsText(files[fileNumber])
     }
     readChunk();
   }
 
   onCheckoutSelected(event): void {
+    this.selectedCheckout.checkoutGUID = event.value.guid;
+    this.selectedCheckout.projectGUID = event.value.projectGUID;
+
     this.transactionData.checkoutGUID = event.value.guid;
     this.transactionData.entityGUID = event.value.entity[0];
+
+    this.getTransactions();
   }
 
   getProjects(): void {
     this.projectService.getProjects().subscribe((response: any) => {
-      this.checkouts =  this.helper.filterCheckoutsFromProjectData(response.items);
+      const data = this.helper.filterCheckoutsFromProjectData(response.items);
+      this.checkouts = data.checkouts;
     });
   }
 
   getTransactions(): void {
-    this.transactionService.getTransactions().subscribe(response => {
+    this.transactionService.getTransactions(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID).subscribe(response => {
       this.transactions = response.items;
     });
   }
@@ -160,6 +175,7 @@ export class TransactionComponent implements OnInit {
   clearingData(): void {
     this.progress.sent = 0;
     this.chunks = [];
+    this.chunkFiles = [];
     this.transaction = undefined;
     this.transactionData.chunkNumber = 5;
     this.transactionData.chunkSize = 20;

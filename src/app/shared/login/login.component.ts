@@ -12,8 +12,8 @@ export class LoginComponent implements OnInit {
   EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   user = {
-    email: 'vildan.tursic@walter.ba',
-    password: 'branisarajevo'
+    email: '',
+    password: ''
   };
 
   servers = [
@@ -39,11 +39,14 @@ export class LoginComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (localStorage.getItem('server') === null) {
+      localStorage.setItem('server', this.server);
+    }
   }
 
   onServerChange(event): void {
     this.server = event.value;
-    config.api = this.server;
+    localStorage.setItem('server', this.server);
   }
 
   login(): void {

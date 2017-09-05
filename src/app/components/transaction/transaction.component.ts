@@ -4,7 +4,8 @@ import { ProjectService } from '../../services/project/project.service';
 import { GeneratorService } from '../../services/utilities/generator/generator.service';
 import { HelperService } from '../../services/helper/helper.service';
 import { MessageService } from '../../services/utilities/message/message.service';
-import {SocketService} from "../../services/socket/socket.service";
+import { SocketService } from '../../services/socket/socket.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-transaction',
@@ -41,7 +42,7 @@ export class TransactionComponent implements OnInit {
 
   transaction;
   chunks = [];
-  chunkFiles = [];
+  chunkFiles = 0;
 
   constructor(private transactionService: TransactionService,
               private generator: GeneratorService,
@@ -110,11 +111,18 @@ export class TransactionComponent implements OnInit {
     }
   }
 
-  finalizeTransaction(transactionGUID): void {
-    this.transactionService.finalizeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, transactionGUID).subscribe(response => {
+  finalizeTransaction(event: { guid: string, clear: boolean, repeat: boolean }): void {
+    this.transactionService.finalizeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, event.guid).subscribe(response => {
       this.messageService.show('Transaction Finalized');
       this.getTransactions();
-      this.clearingData();
+      this.clearProgress();
+      if (event.clear) {
+        this.clearingData();
+      }
+      // TODO feature should be moved to socket function, because transaction is not fully finalized on this step
+      if (event.repeat && !event.clear) {
+        this.initializeTransaction();
+      }
     });
   }
 
@@ -127,8 +135,8 @@ export class TransactionComponent implements OnInit {
   }
 
   onFilesUpload(files): void {
-    this.chunkFiles = files;
-    this.transactionData.chunkNumber = this.chunkFiles.length;
+    this.transactionData.chunkNumber = _.cloneDeep(files.length);
+    this.chunkFiles = _.cloneDeep(this.transactionData.chunkNumber);
 
     const myReader: FileReader = new FileReader();
     let chunkNumber = 0;
@@ -172,10 +180,14 @@ export class TransactionComponent implements OnInit {
     });
   }
 
-  clearingData(): void {
+  clearProgress(): void {
     this.progress.sent = 0;
+  }
+
+  clearingData(): void {
+    this.clearProgress();
     this.chunks = [];
-    this.chunkFiles = [];
+    this.chunkFiles = 0;
     this.transaction = undefined;
     this.transactionData.chunkNumber = 5;
     this.transactionData.chunkSize = 20;

@@ -14,7 +14,7 @@ export class TransactionService {
    * @returns {Observable<any>}
    */
   getTransactions(projectGUID, checkoutGUID): Observable<any> {
-    return this.service.get('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction`);
+    return this.service.get('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction?search[destination.project]=${projectGUID}`);
   }
 
   /**
@@ -48,7 +48,7 @@ export class TransactionService {
    * @returns {any}
    */
   finalizeTransaction(projectGUID, checkoutGUID, guid): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}/finalize`)
+    return this.service.post('data', `transaction/${guid}/finalize`)
   }
 
   /**

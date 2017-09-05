@@ -1,17 +1,15 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import {Component, OnInit, EventEmitter, Output, ViewChild, ElementRef} from '@angular/core';
 
 @Component({
   selector: 'app-file-upload',
   template: `
-    <input type="file" (change)="fileChange($event)" multiple="true" placeholder="Upload file" accept=".json, .txt, .js">
+    <input #fileInput type="file" (change)="fileChange($event)" multiple="true" placeholder="Upload file" accept=".json, .txt, .js">
   `,
 })
 export class FileUploadComponent implements OnInit {
 
-  // chunks location
-  // C:\Users\PCHARDWARE\Documents\CODE\bim-generator\src\assets\transaction-files
-
   @Output('onFilesUpload') onFilesUpload: EventEmitter<FileList> = new EventEmitter();
+  @ViewChild('fileInput') fileInput: ElementRef;
 
   constructor() { }
 
@@ -19,10 +17,13 @@ export class FileUploadComponent implements OnInit {
   }
 
   fileChange(event) {
-    let fileList: FileList = event.target.files;
-    if(fileList.length > 0) {
+    const fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
       this.onFilesUpload.emit(fileList);
     }
+    setTimeout(() => {
+      this.fileInput.nativeElement.value = '';
+    }, 1000)
   }
 
 }

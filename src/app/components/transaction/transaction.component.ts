@@ -24,7 +24,9 @@ export class TransactionComponent implements OnInit {
     checkoutGUID: ''
   };
 
-  job = '';
+  jobStatus = '';
+  isInProcess = false;
+
   transactionGUID;
   transactionData = {
     checkoutGUID: '',
@@ -53,9 +55,6 @@ export class TransactionComponent implements OnInit {
 
   ngOnInit() {
     this.getProjects();
-    this.socketService.socket.on('job' + this.job, (data) => {
-      console.log(data)
-    })
   }
 
   generateTransaction(): void {
@@ -87,6 +86,7 @@ export class TransactionComponent implements OnInit {
   }
 
   initializeTransaction(): void {
+    this.isInProcess = true;
     this.transactionService.initializeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, this.transaction).subscribe(response => {
       if (response) {
         this.transactionGUID = response.guid
@@ -115,6 +115,7 @@ export class TransactionComponent implements OnInit {
     this.transactionService.finalizeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, event.guid).subscribe(response => {
       this.messageService.show('Transaction Finalized');
       this.getTransactions();
+      this.getJobs();
       this.clearProgress();
       if (event.clear) {
         this.clearingData();
@@ -178,6 +179,28 @@ export class TransactionComponent implements OnInit {
     this.transactionService.getTransactions(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID).subscribe(response => {
       this.transactions = response.items;
     });
+  }
+
+  getJobs(): void {
+    this.socketService.getJobs().subscribe((response: any) => {
+      console.log(response);
+      this.trackJob(response.items[0]._id);
+      this.messageService.show('Finalizing transaction');
+    })
+  }
+
+  trackJob(job: string): void {
+    this.socketService.socket.on('job' + job, (data) => {
+      // this.jobStatus = data.hasOwnProperty('inNumberOf100') ? data.inNumberOf100 : '';
+      console.log(data);
+      if (data.hasOwnProperty('job')) {
+        if (!data.job.status) {
+          this.getTransactions();
+          this.messageService.close();
+          this.isInProcess = false;
+        }
+      }
+    })
   }
 
   clearProgress(): void {

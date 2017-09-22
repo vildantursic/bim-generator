@@ -34,24 +34,24 @@ export class HelperService {
     return reqUrl;
   }
 
-  filterCheckoutsFromProjectData(projects: any): any {
-    const checkouts = [];
+  filterWorksetsFromProjectData(projects: any): any {
+    const worksets = [];
 
     projects.forEach(project => {
-      project.checkout.forEach(checkout => {
-        Object.defineProperty(checkout, 'projectGUID', {
+      project.workset.forEach(workset => {
+        Object.defineProperty(workset, 'projectGUID', {
           enumerable: true,
           configurable: true,
           writable: true,
           value: project.guid
         });
-        checkout.name = `${project.name} | ${checkout.name}`;
-        checkouts.push(checkout);
+        workset.name = `${project.name} | ${workset.name}`;
+        worksets.push(workset);
       })
     })
 
     return {
-      checkouts: checkouts,
+      worksets: worksets,
       projects: projects
     };
   }

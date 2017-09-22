@@ -10,7 +10,9 @@ export class SocketService {
   socket: any;
 
   constructor(private service: MainService) {
-    this.socket = io.connect(localStorage.getItem('server'), {
+    this.socket = io.connect(localStorage.getItem('server') === 'http://localhost' ?
+                             localStorage.getItem('server') + ':3001' :
+                             localStorage.getItem('server'), {
       transports: ['websocket']
     });
   }
@@ -24,7 +26,7 @@ export class SocketService {
    * @returns {Observable<any>}
    */
   getJobs(): Observable<any> {
-    return this.service.get('data', `job`);
+    return this.service.get('data', `job?search[active]=true`);
   }
 
 }

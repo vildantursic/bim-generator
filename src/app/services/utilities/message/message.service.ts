@@ -6,8 +6,8 @@ export class MessageService {
 
   constructor(private snackBar: MdSnackBar) { }
 
-  show(message, duration = 3000): void {
-    this.snackBar.open(message, '');
+  show(message, duration?): void {
+    this.snackBar.open(message, '', duration ? { duration: duration } : null);
   }
 
   close(): void {

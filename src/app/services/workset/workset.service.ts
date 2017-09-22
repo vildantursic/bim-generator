@@ -3,7 +3,7 @@ import { MainService } from '../main.service';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class CheckoutService {
+export class WorksetService {
 
   constructor(private service: MainService) { }
 
@@ -11,7 +11,7 @@ export class CheckoutService {
    * Gets array of checkouts
    * @returns {Observable<any>}
    */
-  getCheckouts(): Observable<any> {
-    return this.service.get('data', 'checkout');
+  getWorksets(): Observable<any> {
+    return this.service.get('data', 'workset');
   }
 }

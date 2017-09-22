@@ -15,4 +15,12 @@ export class AuthService {
   login(data): Observable<any> {
     return this.service.post('auth', `login`, data)
   }
+
+  /**
+   * Get user info
+   * @returns {any}
+   */
+  getUser(): Observable<any> {
+    return this.service.get('auth', `user`)
+  }
 }

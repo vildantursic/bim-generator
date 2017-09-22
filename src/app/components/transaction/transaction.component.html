@@ -12,9 +12,9 @@
     <table class="bim-full-width" cellspacing="0">
       <tr>
         <td>
-          <md-select placeholder="Choose Checkout" class="bim-full-width" (change)="onCheckoutSelected($event)">
-            <md-option *ngFor="let checkout of checkouts" [value]="checkout">
-              {{ checkout.name }}
+          <md-select placeholder="Choose Workset" class="bim-full-width" (change)="onWorksetSelected($event)">
+            <md-option *ngFor="let workset of worksets" [value]="workset">
+              {{ workset.name }}
             </md-option>
           </md-select>
         </td>
@@ -60,7 +60,7 @@
       </tr>
       <tr>
         <td>
-          <button *ngIf="fileImport" [disabled]="selectedCheckout.checkoutGUID === '' || selectedCheckout.projectGUID === '' || isInProcess" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
+          <button *ngIf="fileImport" [disabled]="selectedWorkset.worksetGUID === '' || selectedWorkset.projectGUID === '' || isInProcess" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
           <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0 || isInProcess" md-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
         </td>
       </tr>
@@ -69,6 +69,7 @@
 
   <md-card class="bim-card right">
     <div>
+      <app-stream (onStreamFinished)="trackJob($event)"></app-stream>
       <app-bim-list [items]="transactions"
                     (onFinalizeTransactionClicked)="finalizeTransaction($event)"
                     (onCancelTransactionClicked)="cancelTransaction($event)">

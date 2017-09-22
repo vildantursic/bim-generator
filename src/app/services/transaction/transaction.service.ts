@@ -10,55 +10,55 @@ export class TransactionService {
   /**
    * Gets array of transactions
    * @param projectGUID
-   * @param checkoutGUID
+   * @param worksetGUID
    * @returns {Observable<any>}
    */
-  getTransactions(projectGUID, checkoutGUID): Observable<any> {
-    return this.service.get('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction?search[destination.project]=${projectGUID}`);
+  getTransactions(projectGUID, worksetGUID): Observable<any> {
+    return this.service.get('data', `project/${projectGUID}/workset/${worksetGUID}/transaction?search[destination.project]=${projectGUID}`);
   }
 
   /**
    * Initialize transaction
    * @param projectGUID
-   * @param checkoutGUID
+   * @param worksetGUID
    * @param data
    * @returns {any}
    */
-  initializeTransaction(projectGUID, checkoutGUID, data): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction`, data)
+  initializeTransaction(projectGUID, worksetGUID, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction`, data)
   }
 
   /**
    * Send chunk in transaction
    * @param projectGUID
-   * @param checkoutGUID
+   * @param worksetGUID
    * @param guid
    * @param data
    * @returns {any}
    */
-  sendChunk(projectGUID, checkoutGUID, guid, data): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}`, data)
+  sendChunk(projectGUID, worksetGUID, guid, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}`, data)
   }
 
   /**
    * Finalize transaction
    * @param projectGUID
-   * @param checkoutGUID
+   * @param worksetGUID
    * @param guid
    * @returns {any}
    */
-  finalizeTransaction(projectGUID, checkoutGUID, guid): Observable<any> {
-    return this.service.post('data', `transaction/${guid}/finalize`)
+  finalizeTransaction(projectGUID, worksetGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}/finalize`)
   }
 
   /**
    * Cancel transaction
    * @param projectGUID
-   * @param checkoutGUID
+   * @param worksetGUID
    * @param guid
    * @returns {any}
    */
-  cancelTransaction(projectGUID, checkoutGUID, guid): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/checkout/${checkoutGUID}/transaction/${guid}/cancel`)
+  cancelTransaction(projectGUID, worksetGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}/cancel`)
   }
 }

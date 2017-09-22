@@ -1,6 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { AuthService } from './services/auth/auth.service';
-import { config } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +19,6 @@ export class AppComponent implements AfterViewInit {
 
   login(data): void {
     this.authService.login(data).subscribe((response: any) => {
-      console.log(response.hasOwnProperty('jwt'))
       if (response.hasOwnProperty('jwt')) {
         localStorage.setItem('auth', response.jwt);
         this.isLoggedIn = true;

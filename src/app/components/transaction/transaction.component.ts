@@ -19,9 +19,9 @@ export class TransactionComponent implements OnInit {
   simulateFailure = false;
   chunkToFail;
 
-  selectedCheckout = {
+  selectedWorkset= {
     projectGUID: '',
-    checkoutGUID: ''
+    worksetGUID: ''
   };
 
   jobStatus = '';
@@ -29,7 +29,7 @@ export class TransactionComponent implements OnInit {
 
   transactionGUID;
   transactionData = {
-    checkoutGUID: '',
+    worksetGUID: '',
     entityGUID: '',
     chunkNumber: 5,
     chunkSize: 20
@@ -39,7 +39,7 @@ export class TransactionComponent implements OnInit {
     sent: 0
   }
 
-  checkouts = [];
+  worksets = [];
   transactions = [];
 
   transaction;
@@ -87,9 +87,12 @@ export class TransactionComponent implements OnInit {
 
   initializeTransaction(): void {
     this.isInProcess = true;
-    this.transactionService.initializeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, this.transaction).subscribe(response => {
+    this.transactionService.initializeTransaction(this.selectedWorkset.projectGUID,
+                                                  this.selectedWorkset.worksetGUID,
+                                                  this.transaction).subscribe(response => {
       if (response) {
-        this.transactionGUID = response.guid
+
+        this.transactionGUID = response.guid;
         this.getTransactions();
         this.sendChunks();
       }
@@ -98,7 +101,10 @@ export class TransactionComponent implements OnInit {
 
   sendChunks(): void {
     if (this.transactionGUID && this.chunks.length !== 0 && this.progress.sent < this.chunks.length) {
-      this.transactionService.sendChunk(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, this.transactionGUID, this.chunks[this.progress.sent]).subscribe(response => {
+      this.transactionService.sendChunk(this.selectedWorkset.projectGUID,
+                                        this.selectedWorkset.worksetGUID,
+                                        this.transactionGUID,
+                                        this.chunks[this.progress.sent]).subscribe(response => {
         this.progress.sent++;
         this.getTransactions();
         this.sendChunks();
@@ -112,23 +118,22 @@ export class TransactionComponent implements OnInit {
   }
 
   finalizeTransaction(event: { guid: string, clear: boolean, repeat: boolean }): void {
-    this.transactionService.finalizeTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, event.guid).subscribe(response => {
-      this.messageService.show('Transaction Finalized');
+    this.transactionService.finalizeTransaction(this.selectedWorkset.projectGUID,
+                                                this.selectedWorkset.worksetGUID,
+                                                event.guid).subscribe(response => {
       this.getTransactions();
-      this.getJobs();
+      this.getJobs(event);
       this.clearProgress();
       if (event.clear) {
         this.clearingData();
-      }
-      // TODO feature should be moved to socket function, because transaction is not fully finalized on this step
-      if (event.repeat && !event.clear) {
-        this.initializeTransaction();
       }
     });
   }
 
   cancelTransaction(transactionGUID): void {
-    this.transactionService.cancelTransaction(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID, transactionGUID).subscribe(response => {
+    this.transactionService.cancelTransaction(this.selectedWorkset.projectGUID,
+                                              this.selectedWorkset.worksetGUID,
+                                              transactionGUID).subscribe(response => {
       this.messageService.show('Transaction Canceled');
       this.getTransactions();
       this.clearingData();
@@ -158,11 +163,11 @@ export class TransactionComponent implements OnInit {
     readChunk();
   }
 
-  onCheckoutSelected(event): void {
-    this.selectedCheckout.checkoutGUID = event.value.guid;
-    this.selectedCheckout.projectGUID = event.value.projectGUID;
+  onWorksetSelected(event): void {
+    this.selectedWorkset.worksetGUID = event.value.guid;
+    this.selectedWorkset.projectGUID = event.value.projectGUID;
 
-    this.transactionData.checkoutGUID = event.value.guid;
+    this.transactionData.worksetGUID = event.value.guid;
     this.transactionData.entityGUID = event.value.entity[0];
 
     this.getTransactions();
@@ -170,37 +175,36 @@ export class TransactionComponent implements OnInit {
 
   getProjects(): void {
     this.projectService.getProjects().subscribe((response: any) => {
-      const data = this.helper.filterCheckoutsFromProjectData(response.items);
-      this.checkouts = data.checkouts;
+      const data = this.helper.filterWorksetsFromProjectData(response.items);
+      this.worksets = data.worksets;
     });
   }
 
   getTransactions(): void {
-    this.transactionService.getTransactions(this.selectedCheckout.projectGUID, this.selectedCheckout.checkoutGUID).subscribe(response => {
+    this.transactionService.getTransactions(this.selectedWorkset.projectGUID, this.selectedWorkset.worksetGUID).subscribe(response => {
       this.transactions = response.items;
     });
   }
 
-  getJobs(): void {
+  getJobs(eventForTransaction): void {
     this.socketService.getJobs().subscribe((response: any) => {
       console.log(response);
-      this.trackJob(response.items[0]._id);
-      this.messageService.show('Finalizing transaction');
-    })
+    });
+    if (eventForTransaction.repeat && !eventForTransaction.clear) {
+      this.initializeTransaction();
+    }
   }
 
-  trackJob(job: string): void {
-    this.socketService.socket.on('job' + job, (data) => {
-      // this.jobStatus = data.hasOwnProperty('inNumberOf100') ? data.inNumberOf100 : '';
-      console.log(data);
-      if (data.hasOwnProperty('job')) {
-        if (!data.job.status) {
-          this.getTransactions();
-          this.messageService.close();
-          this.isInProcess = false;
-        }
+  trackJob(data): void {
+    console.log(data);
+    if (data.hasOwnProperty('active')) {
+      if (!data.active) {
+        this.getTransactions();
+        this.messageService.close();
+        this.messageService.show('Transaction Finalized', 3000);
+        this.isInProcess = false;
       }
-    })
+    }
   }
 
   clearProgress(): void {

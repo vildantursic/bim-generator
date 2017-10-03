@@ -189,7 +189,6 @@ export class TransactionComponent implements OnInit {
     this.getTransactions();
 
     if (data.hasOwnProperty('meta')) {
-      console.log(data.meta.type);
       if (data.meta.type === 'mergeWorksetJob') {
         this.jobType = data.meta.type;
       }
@@ -201,7 +200,6 @@ export class TransactionComponent implements OnInit {
       this.getTransactions();
     }, 1000);
 
-    console.log(this.jobType);
     if (data.hasOwnProperty('inNumberOf100')) {
       if (data.inNumberOf100 === 100 && this.jobType === 'mergeWorksetJob') {
         this.messageService.show('Transaction Finalized', 3000);

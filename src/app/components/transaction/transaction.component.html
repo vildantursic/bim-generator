@@ -21,7 +21,7 @@
       </tr>
       <tr class="bim-section">
         <td>
-          <md-slide-toggle [(ngModel)]="fileImport">Generate Transaction</md-slide-toggle>
+          <md-slide-toggle disabled="true" [(ngModel)]="fileImport">Generate Transaction</md-slide-toggle>
         </td>
       </tr>
       <tr *ngIf="fileImport">
@@ -69,7 +69,7 @@
 
   <md-card class="bim-card right">
     <div>
-      <app-stream (onStreamFinished)="trackJob($event)"></app-stream>
+      <app-stream (onStreamStarted)="startJob($event)" (onStreamFinished)="finishJob($event)"></app-stream>
       <app-bim-list [items]="transactions"
                     (onFinalizeTransactionClicked)="finalizeTransaction($event)"
                     (onCancelTransactionClicked)="cancelTransaction($event)">

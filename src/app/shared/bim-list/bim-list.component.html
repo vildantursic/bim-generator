@@ -15,11 +15,11 @@
               md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: false })">
         Finalize
       </button>
-      <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
+      <button [disabled]="true"
               md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: true, repeat: false })">
         Finalize and Clear
       </button>
-      <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
+      <button [disabled]="true"
               md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: true })">
         Finalize and Repeat
       </button>

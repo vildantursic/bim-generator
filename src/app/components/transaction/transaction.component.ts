@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 })
 export class TransactionComponent implements OnInit {
 
-  fileImport = true;
+  fileImport = false;
 
   simulateFailure = false;
   chunkToFail;
@@ -25,6 +25,7 @@ export class TransactionComponent implements OnInit {
   };
 
   jobStatus = '';
+  jobType = '';
   isInProcess = false;
 
   transactionGUID;
@@ -50,8 +51,7 @@ export class TransactionComponent implements OnInit {
               private generator: GeneratorService,
               private helper: HelperService,
               private projectService: ProjectService,
-              private messageService: MessageService,
-              private socketService: SocketService) { }
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.getProjects();
@@ -122,10 +122,9 @@ export class TransactionComponent implements OnInit {
                                                 this.selectedWorkset.worksetGUID,
                                                 event.guid).subscribe(response => {
       this.getTransactions();
-      this.getJobs(event);
       this.clearProgress();
       if (event.clear) {
-        this.clearingData();
+        this.clearData();
       }
     });
   }
@@ -134,9 +133,9 @@ export class TransactionComponent implements OnInit {
     this.transactionService.cancelTransaction(this.selectedWorkset.projectGUID,
                                               this.selectedWorkset.worksetGUID,
                                               transactionGUID).subscribe(response => {
-      this.messageService.show('Transaction Canceled');
+      this.messageService.show('Transaction Canceled', 3000);
       this.getTransactions();
-      this.clearingData();
+      this.clearData();
     });
   }
 
@@ -186,37 +185,42 @@ export class TransactionComponent implements OnInit {
     });
   }
 
-  getJobs(eventForTransaction): void {
-    this.socketService.getJobs().subscribe((response: any) => {
-      console.log(response);
-    });
-    if (eventForTransaction.repeat && !eventForTransaction.clear) {
-      this.initializeTransaction();
+  startJob(data): void {
+    this.getTransactions();
+
+    if (data.hasOwnProperty('meta')) {
+      console.log(data.meta.type);
+      if (data.meta.type === 'mergeWorksetJob') {
+        this.jobType = data.meta.type;
+      }
     }
   }
 
-  trackJob(data): void {
-    console.log(data);
-    if (data.hasOwnProperty('active')) {
-      if (!data.active) {
-        this.getTransactions();
-        this.messageService.close();
+  finishJob(data): void {
+    setTimeout(() => {
+      this.getTransactions();
+    }, 1000);
+
+    console.log(this.jobType);
+    if (data.hasOwnProperty('inNumberOf100')) {
+      if (data.inNumberOf100 === 100 && this.jobType === 'mergeWorksetJob') {
         this.messageService.show('Transaction Finalized', 3000);
         this.isInProcess = false;
       }
     }
   }
 
-  clearProgress(): void {
-    this.progress.sent = 0;
-  }
-
-  clearingData(): void {
+  clearData(): void {
     this.clearProgress();
     this.chunks = [];
     this.chunkFiles = 0;
     this.transaction = undefined;
     this.transactionData.chunkNumber = 5;
     this.transactionData.chunkSize = 20;
+    this.isInProcess = false;
+  }
+
+  clearProgress(): void {
+    this.progress.sent = 0;
   }
 }

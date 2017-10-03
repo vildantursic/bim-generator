@@ -26,22 +26,28 @@ export class StreamComponent implements OnInit {
   jobMeta;
   jobSync;
 
+  @Output('onStreamStarted') onStreamStarted: EventEmitter<{}> = new EventEmitter();
   @Output('onStreamFinished') onStreamFinished: EventEmitter<{}> = new EventEmitter();
 
   constructor(private authService: AuthService, private socketService: SocketService) { }
 
   ngOnInit() {
-    this.getUserInfo();
+    this.subscribeToStream();
   }
 
-  getUserInfo(): void {
+  subscribeToStream(): void {
     this.authService.getUser().subscribe((response: any) => {
       if (response.hasOwnProperty('company')) {
         this.socketService.socket.on(`${response.company._id}/jobs`, (data) => {
           this.jobMeta = data;
-          this.onStreamFinished.emit(this.jobMeta);
-          this.socketService.socket.on('job/' + data.guid, (sync) => {
+          this.onStreamStarted.emit(this.jobMeta);
+          this.socketService.socket.on('job' + data._id, (sync) => {
             this.jobSync = sync;
+            if (this.jobSync.hasOwnProperty('inNumberOf100')) {
+              if (this.jobSync.inNumberOf100 === 100) {
+                this.onStreamFinished.emit(this.jobSync);
+              }
+            }
           })
         })
       }

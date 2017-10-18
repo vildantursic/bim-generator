@@ -10,55 +10,55 @@ export class TransactionService {
   /**
    * Gets array of transactions
    * @param projectGUID
-   * @param worksetGUID
+   * @param bimmodelGUID
    * @returns {Observable<any>}
    */
-  getTransactions(projectGUID, worksetGUID): Observable<any> {
-    return this.service.get('data', `project/${projectGUID}/workset/${worksetGUID}/transaction?search[destination.project]=${projectGUID}`);
+  getTransactions(projectGUID, bimmodelGUID): Observable<any> {
+    return this.service.get('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction?search[destination.project]=${projectGUID}`);
   }
 
   /**
    * Initialize transaction
    * @param projectGUID
-   * @param worksetGUID
+   * @param bimmodelGUID
    * @param data
    * @returns {any}
    */
-  initializeTransaction(projectGUID, worksetGUID, data): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction`, data)
+  initializeTransaction(projectGUID, bimmodelGUID, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction`, data)
   }
 
   /**
    * Send chunk in transaction
    * @param projectGUID
-   * @param worksetGUID
+   * @param bimmodelGUID
    * @param guid
    * @param data
    * @returns {any}
    */
-  sendChunk(projectGUID, worksetGUID, guid, data): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}`, data)
+  sendChunk(projectGUID, bimmodelGUID, guid, data): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction/${guid}`, data)
   }
 
   /**
    * Finalize transaction
    * @param projectGUID
-   * @param worksetGUID
+   * @param bimmodelGUID
    * @param guid
    * @returns {any}
    */
-  finalizeTransaction(projectGUID, worksetGUID, guid): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}/finalize`)
+  finalizeTransaction(projectGUID, bimmodelGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction/${guid}/finalize`)
   }
 
   /**
    * Cancel transaction
    * @param projectGUID
-   * @param worksetGUID
+   * @param bimmodelGUID
    * @param guid
    * @returns {any}
    */
-  cancelTransaction(projectGUID, worksetGUID, guid): Observable<any> {
-    return this.service.post('data', `project/${projectGUID}/workset/${worksetGUID}/transaction/${guid}/cancel`)
+  cancelTransaction(projectGUID, bimmodelGUID, guid): Observable<any> {
+    return this.service.post('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction/${guid}/cancel`)
   }
 }

@@ -3,7 +3,7 @@ import { MainService } from '../main.service';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class WorksetService {
+export class BimModelService {
 
   constructor(private service: MainService) { }
 
@@ -11,7 +11,7 @@ export class WorksetService {
    * Gets array of checkouts
    * @returns {Observable<any>}
    */
-  getWorksets(): Observable<any> {
-    return this.service.get('data', 'workset');
+  getBimModels(): Observable<any> {
+    return this.service.get('data', 'bimmodel');
   }
 }

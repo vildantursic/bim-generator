@@ -4,7 +4,6 @@ import { ProjectService } from '../../services/project/project.service';
 import { GeneratorService } from '../../services/utilities/generator/generator.service';
 import { HelperService } from '../../services/helper/helper.service';
 import { MessageService } from '../../services/utilities/message/message.service';
-import { SocketService } from '../../services/socket/socket.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -19,9 +18,9 @@ export class TransactionComponent implements OnInit {
   simulateFailure = false;
   chunkToFail;
 
-  selectedWorkset= {
+  selectedBimModel= {
     projectGUID: '',
-    worksetGUID: ''
+    bimModelGUID: ''
   };
 
   jobStatus = '';
@@ -30,7 +29,7 @@ export class TransactionComponent implements OnInit {
 
   transactionGUID;
   transactionData = {
-    worksetGUID: '',
+    bimModelGUID: '',
     entityGUID: '',
     chunkNumber: 5,
     chunkSize: 20
@@ -40,7 +39,7 @@ export class TransactionComponent implements OnInit {
     sent: 0
   }
 
-  worksets = [];
+  bimModels = [];
   transactions = [];
 
   transaction;
@@ -87,8 +86,8 @@ export class TransactionComponent implements OnInit {
 
   initializeTransaction(): void {
     this.isInProcess = true;
-    this.transactionService.initializeTransaction(this.selectedWorkset.projectGUID,
-                                                  this.selectedWorkset.worksetGUID,
+    this.transactionService.initializeTransaction(this.selectedBimModel.projectGUID,
+                                                  this.selectedBimModel.bimModelGUID,
                                                   this.transaction).subscribe(response => {
       if (response) {
 
@@ -101,8 +100,8 @@ export class TransactionComponent implements OnInit {
 
   sendChunks(): void {
     if (this.transactionGUID && this.chunks.length !== 0 && this.progress.sent < this.chunks.length) {
-      this.transactionService.sendChunk(this.selectedWorkset.projectGUID,
-                                        this.selectedWorkset.worksetGUID,
+      this.transactionService.sendChunk(this.selectedBimModel.projectGUID,
+                                        this.selectedBimModel.bimModelGUID,
                                         this.transactionGUID,
                                         this.chunks[this.progress.sent]).subscribe(response => {
         this.progress.sent++;
@@ -118,8 +117,8 @@ export class TransactionComponent implements OnInit {
   }
 
   finalizeTransaction(event: { guid: string, clear: boolean, repeat: boolean }): void {
-    this.transactionService.finalizeTransaction(this.selectedWorkset.projectGUID,
-                                                this.selectedWorkset.worksetGUID,
+    this.transactionService.finalizeTransaction(this.selectedBimModel.projectGUID,
+                                                this.selectedBimModel.bimModelGUID,
                                                 event.guid).subscribe(response => {
       this.getTransactions();
       this.clearProgress();
@@ -130,8 +129,8 @@ export class TransactionComponent implements OnInit {
   }
 
   cancelTransaction(transactionGUID): void {
-    this.transactionService.cancelTransaction(this.selectedWorkset.projectGUID,
-                                              this.selectedWorkset.worksetGUID,
+    this.transactionService.cancelTransaction(this.selectedBimModel.projectGUID,
+                                              this.selectedBimModel.bimModelGUID,
                                               transactionGUID).subscribe(response => {
       this.messageService.show('Transaction Canceled', 3000);
       this.getTransactions();
@@ -162,11 +161,11 @@ export class TransactionComponent implements OnInit {
     readChunk();
   }
 
-  onWorksetSelected(event): void {
-    this.selectedWorkset.worksetGUID = event.value.guid;
-    this.selectedWorkset.projectGUID = event.value.projectGUID;
+  onBimModelSelected(event): void {
+    this.selectedBimModel.bimModelGUID = event.value.guid;
+    this.selectedBimModel.projectGUID = event.value.projectGUID;
 
-    this.transactionData.worksetGUID = event.value.guid;
+    this.transactionData.bimModelGUID = event.value.guid;
     this.transactionData.entityGUID = event.value.entity[0];
 
     this.getTransactions();
@@ -174,13 +173,15 @@ export class TransactionComponent implements OnInit {
 
   getProjects(): void {
     this.projectService.getProjects().subscribe((response: any) => {
-      const data = this.helper.filterWorksetsFromProjectData(response.items);
-      this.worksets = data.worksets;
+      const data = this.helper.filterBimModelsFromProjectData(response.items);
+      this.bimModels = data.bimmodels;
     });
   }
 
   getTransactions(): void {
-    this.transactionService.getTransactions(this.selectedWorkset.projectGUID, this.selectedWorkset.worksetGUID).subscribe(response => {
+    this.transactionService
+      .getTransactions(this.selectedBimModel.projectGUID, this.selectedBimModel.bimModelGUID)
+      .subscribe(response => {
       this.transactions = response.items;
     });
   }
@@ -189,7 +190,7 @@ export class TransactionComponent implements OnInit {
     this.getTransactions();
 
     if (data.hasOwnProperty('meta')) {
-      if (data.meta.type === 'mergeWorksetJob') {
+      if (data.meta.type === 'mergeBimModelJob') {
         this.jobType = data.meta.type;
       }
     }
@@ -201,7 +202,7 @@ export class TransactionComponent implements OnInit {
     }, 1000);
 
     if (data.hasOwnProperty('inNumberOf100')) {
-      if (data.inNumberOf100 === 100 && this.jobType === 'mergeWorksetJob') {
+      if (data.inNumberOf100 === 100 && this.jobType === 'mergeBimModelJob') {
         this.messageService.show('Transaction Finalized', 3000);
         this.isInProcess = false;
       }

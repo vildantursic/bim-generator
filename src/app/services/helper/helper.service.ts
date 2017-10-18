@@ -34,24 +34,26 @@ export class HelperService {
     return reqUrl;
   }
 
-  filterWorksetsFromProjectData(projects: any): any {
-    const worksets = [];
+  filterBimModelsFromProjectData(projects: any): any {
+    const bimmodels = [];
 
     projects.forEach(project => {
-      project.workset.forEach(workset => {
-        Object.defineProperty(workset, 'projectGUID', {
+      project.bimmodel.forEach(bimmodel => {
+        Object.defineProperty(bimmodel, 'projectGUID', {
           enumerable: true,
           configurable: true,
           writable: true,
           value: project.guid
         });
-        workset.name = `${project.name} | ${workset.name}`;
-        worksets.push(workset);
+        bimmodel.name = `${project.name} | ${bimmodel.name}`;
+        bimmodels.push(bimmodel);
       })
     })
 
+    console.log(bimmodels);
+
     return {
-      worksets: worksets,
+      bimmodels: bimmodels,
       projects: projects
     };
   }

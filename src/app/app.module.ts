@@ -14,7 +14,7 @@ import { HelperService } from './services/helper/helper.service';
 import { TransactionService } from './services/transaction/transaction.service';
 import { AuthService } from './services/auth/auth.service';
 import { ProjectService } from './services/project/project.service';
-import { WorksetService } from './services/workset/workset.service';
+import { BimModelService } from './services/bimmodel/bimmodel.service';
 import { EntityService } from './services/entity/entity.service';
 import { GeneratorService } from './services/utilities/generator/generator.service';
 import { MessageService } from './services/utilities/message/message.service';
@@ -37,7 +37,7 @@ import { SocketService } from './services/socket/socket.service';
     AuthService,
     TransactionService,
     ProjectService,
-    WorksetService,
+    BimModelService,
     EntityService,
     GeneratorService,
     MessageService,

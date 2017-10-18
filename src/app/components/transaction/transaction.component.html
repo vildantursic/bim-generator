@@ -12,9 +12,9 @@
     <table class="bim-full-width" cellspacing="0">
       <tr>
         <td>
-          <md-select placeholder="Choose Workset" class="bim-full-width" (change)="onWorksetSelected($event)">
-            <md-option *ngFor="let workset of worksets" [value]="workset">
-              {{ workset.name }}
+          <md-select placeholder="Choose BimModel" class="bim-full-width" (change)="onBimModelSelected($event)">
+            <md-option *ngFor="let bm of bimModels" [value]="bm">
+              {{ bm.name }}
             </md-option>
           </md-select>
         </td>
@@ -60,7 +60,7 @@
       </tr>
       <tr>
         <td>
-          <button *ngIf="fileImport" [disabled]="selectedWorkset.worksetGUID === '' || selectedWorkset.projectGUID === '' || isInProcess" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
+          <button *ngIf="fileImport" [disabled]="selectedBimModel.bimmodelGUID === '' || selectedBimModel.projectGUID === '' || isInProcess" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
           <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0 || isInProcess" md-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
         </td>
       </tr>

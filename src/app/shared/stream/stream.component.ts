@@ -12,12 +12,12 @@ import { AuthService } from '../../services/auth/auth.service';
       <div *ngIf="jobSync?.inNumberOf100">
         <label for="">Sync process: {{jobSync?.inNumberOf100}} %</label>
       </div>
-      <md-progress-bar
+      <mat-progress-bar
         class="bim-progress"
         color="primary"
         mode="determinate"
         [value]="jobSync?.inNumberOf100">
-      </md-progress-bar>
+      </mat-progress-bar>
     </div>
   `,
 })

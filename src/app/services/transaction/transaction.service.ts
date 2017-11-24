@@ -61,4 +61,13 @@ export class TransactionService {
   cancelTransaction(projectGUID, bimmodelGUID, guid): Observable<any> {
     return this.service.post('data', `project/${projectGUID}/bimmodel/${bimmodelGUID}/transaction/${guid}/cancel`)
   }
+
+  /**
+   * File upload
+   * @param file
+   * @returns {any}
+   */
+  fileUpload(file): Observable<any> {
+    return this.service.post('file', `file`)
+  }
 }

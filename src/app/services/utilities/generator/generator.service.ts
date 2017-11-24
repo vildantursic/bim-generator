@@ -160,7 +160,7 @@ export class GeneratorService {
       "1120 DÖRRBLADSKANT MATERIAL" : "",
       "1130 DÖRRBLADSKANT YTBEHANDLING" : "",
       "1310 KARM VÄGGTJOCKLEK" : "120",
-      "1320 KARM KARMDJUP" : "120",
+      "1320 KARM KARmatJUP" : "120",
       "1330 KARM TYP OCH MATERIAL" : "",
       "1340 KARM PÅKÖRNINGSSKYDD" : "",
       "1360 KARM YTBEHANDLING" : "",

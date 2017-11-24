@@ -3,6 +3,10 @@ body {
   margin: 0;
 }
 
+.space-arround {
+  margin: 15px;
+}
+
 /* SCROLL */
 ::-webkit-scrollbar {
   width: 10px;

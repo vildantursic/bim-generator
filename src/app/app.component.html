@@ -1,8 +1,8 @@
-<md-toolbar color="primary">
+<mat-toolbar color="primary">
   <span>BIM GENERATOR</span>
   <span class="bim-spacer"></span>
-  <md-icon class="bim-icon" (click)="logout()">exit_to_app</md-icon>
-</md-toolbar>
+  <mat-icon class="bim-icon" (click)="logout()">exit_to_app</mat-icon>
+</mat-toolbar>
 
 <div class="bim-content">
   <div class="login" *ngIf="!isLoggedIn">
@@ -10,8 +10,8 @@
   </div>
 
   <div class="transaction" *ngIf="isLoggedIn">
-    <md-card class="bim-card">
+    <mat-card class="bim-card">
       <app-transaction></app-transaction>
-    </md-card>
+    </mat-card>
   </div>
 </div>

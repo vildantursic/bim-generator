@@ -138,6 +138,12 @@ export class TransactionComponent implements OnInit {
     });
   }
 
+  onScriptUploaded(files): void {
+    this.transactionService.fileUpload(files).subscribe((response: any) => {
+      console.log(response)
+    })
+  }
+
   onFilesUpload(files): void {
     this.transactionData.chunkNumber = _.cloneDeep(files.length);
     this.chunkFiles = _.cloneDeep(this.transactionData.chunkNumber);

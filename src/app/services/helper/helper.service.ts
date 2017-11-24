@@ -16,6 +16,8 @@ export class HelperService {
     if (rootUrl === 'http://localhost') {
       if (service === 'auth') {
         rootUrl = 'http://localhost:3000';
+      } else if (service === 'file') {
+        rootUrl = 'http://localhost:3002';
       } else {
         rootUrl = 'http://localhost:3001';
       }

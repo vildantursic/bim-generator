@@ -1,32 +1,32 @@
-<md-list>
-  <md-list-item class="bim-list-item" *ngFor="let item of items">
-    <md-chip-list>
-      <md-chip  [color]="setTagColor(item.state)" [selected]="isTagFinalizeOrCancel(item.state)">{{item?.state}}</md-chip>
-    </md-chip-list>
-    <h4 md-line>
+<mat-list>
+  <mat-list-item class="bim-list-item" *ngFor="let item of items">
+    <mat-chip-list>
+      <mat-chip  [color]="setTagColor(item.state)" [selected]="isTagFinalizeOrCancel(item.state)">{{item?.state}}</mat-chip>
+    </mat-chip-list>
+    <h4 mat-line>
       {{item?.guid}}
     </h4>
-    <p md-line>
+    <p mat-line>
       {{item?.created}}
     </p>
-    <md-icon md-list-icon [mdMenuTriggerFor]="menu" style="float: left">menu</md-icon>
-    <md-menu #menu="mdMenu" xPosition="before">
+    <mat-icon mat-list-icon [matMenuTriggerFor]="menu" style="float: left">menu</mat-icon>
+    <mat-menu #menu="matMenu" xPosition="before">
       <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
-              md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: false })">
+              mat-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: false })">
         Finalize
       </button>
       <button [disabled]="true"
-              md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: true, repeat: false })">
+              mat-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: true, repeat: false })">
         Finalize and Clear
       </button>
       <button [disabled]="true"
-              md-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: true })">
+              mat-menu-item (click)="onFinalizeTransactionClicked.emit({ guid: item.guid, clear: false, repeat: true })">
         Finalize and Repeat
       </button>
       <button [disabled]="item.state === 'finished' || item.state === 'canceled'"
-              md-menu-item (click)="onCancelTransactionClicked.emit(item.guid)">
+              mat-menu-item (click)="onCancelTransactionClicked.emit(item.guid)">
         Cancel
       </button>
-    </md-menu>
-  </md-list-item>
-</md-list>
+    </mat-menu>
+  </mat-list-item>
+</mat-list>

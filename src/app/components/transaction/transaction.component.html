@@ -1,73 +1,87 @@
 <label for="">Chunks sent: {{progress.sent}} / {{transactionData.chunkNumber}}</label>
-<md-progress-bar
+<mat-progress-bar
   class="bim-progress"
   color="primary"
   mode="determinate"
   value="{{(progress.sent / transactionData.chunkNumber) * 100}}">
-</md-progress-bar>
+</mat-progress-bar>
 
 <div class="bim-content-wrapper">
-  <md-card class="bim-card left">
+  <mat-card class="bim-card left">
 
-    <table class="bim-full-width" cellspacing="0">
-      <tr>
-        <td>
-          <md-select placeholder="Choose BimModel" class="bim-full-width" (change)="onBimModelSelected($event)">
-            <md-option *ngFor="let bm of bimModels" [value]="bm">
-              {{ bm.name }}
-            </md-option>
-          </md-select>
-        </td>
-      </tr>
-      <tr class="bim-section">
-        <td>
-          <md-slide-toggle disabled="true" [(ngModel)]="fileImport">Generate Transaction</md-slide-toggle>
-        </td>
-      </tr>
-      <tr *ngIf="fileImport">
-        <td>
-          <md-input-container class="bim-full-width">
-            <input type="number" mdInput placeholder="Number of Chunks" [(ngModel)]="transactionData.chunkNumber">
-          </md-input-container>
-        </td>
-        <td>
-          <md-input-container class="bim-full-width">
-            <input type="number" mdInput placeholder="Number of Items in Chunk" [(ngModel)]="transactionData.chunkSize">
-          </md-input-container>
-        </td>
-      </tr>
-      <tr *ngIf="!fileImport" style="margin: 20px 0">
-        <td>
-          Selected {{chunkFiles}} Chunks
-        </td>
-        <td>
-          <div class="bim-section">
-            <app-file-upload (onFilesUpload)="onFilesUpload($event)"></app-file-upload>
-          </div>
-        </td>
-      </tr>
-      <tr *ngIf="fileImport" class="bim-section">
-        <td>
-          <md-slide-toggle [(ngModel)]="simulateFailure">Simulate Failure</md-slide-toggle>
-        </td>
-      </tr>
-      <tr *ngIf="simulateFailure">
-        <td>
-          <md-input-container class="bim-full-width">
-            <input type="number" mdInput placeholder="Chunk to Fail (1-N)" [(ngModel)]="chunkToFail">
-          </md-input-container>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <button *ngIf="fileImport" [disabled]="selectedBimModel.bimmodelGUID === '' || selectedBimModel.projectGUID === '' || isInProcess" md-raised-button color="accent" (click)="generateTransaction()">Sync</button>
-          <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0 || isInProcess" md-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
-        </td>
-      </tr>
-    </table>
-  </md-card>
+    <mat-tab-group>
+      <mat-tab label="Sync">
+        <div class="space-arround">
+          <table class="bim-full-width" cellspacing="0">
+            <tr>
+              <td>
+                <mat-form-field class="bim-full-width">
+                  <mat-select placeholder="Choose BimModel" (change)="onBimModelSelected($event)">
+                    <mat-option *ngFor="let bm of bimModels" [value]="bm">
+                      {{ bm.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr class="bim-section">
+              <td>
+                <mat-slide-toggle disabled="true" [(ngModel)]="fileImport">Generate Transaction</mat-slide-toggle>
+              </td>
+            </tr>
+            <tr *ngIf="fileImport">
+              <td>
+                <mat-input-container class="bim-full-width">
+                  <input type="number" matInput placeholder="Number of Chunks" [(ngModel)]="transactionData.chunkNumber">
+                </mat-input-container>
+              </td>
+              <td>
+                <mat-input-container class="bim-full-width">
+                  <input type="number" matInput placeholder="Number of Items in Chunk" [(ngModel)]="transactionData.chunkSize">
+                </mat-input-container>
+              </td>
+            </tr>
+            <tr *ngIf="!fileImport" style="margin: 20px 0">
+              <td>
+                Selected {{chunkFiles}} Chunks
+              </td>
+              <td>
+                <div class="bim-section">
+                  <app-file-upload (onFilesUpload)="onFilesUpload($event)"></app-file-upload>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="fileImport" class="bim-section">
+              <td>
+                <mat-slide-toggle [(ngModel)]="simulateFailure">Simulate Failure</mat-slide-toggle>
+              </td>
+            </tr>
+            <tr *ngIf="simulateFailure">
+              <td>
+                <mat-input-container class="bim-full-width">
+                  <input type="number" matInput placeholder="Chunk to Fail (1-N)" [(ngModel)]="chunkToFail">
+                </mat-input-container>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button *ngIf="fileImport" [disabled]="selectedBimModel.bimmodelGUID === '' || selectedBimModel.projectGUID === '' || isInProcess" mat-raised-button color="accent" (click)="generateTransaction()">Sync</button>
+                <button *ngIf="!fileImport" [disabled]="chunkFiles.length === 0 || isInProcess" mat-raised-button color="accent" (click)="generateTransactionFromFiles()">Sync</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-tab>
+      <mat-tab label="Script">
+        <div class="space-arround">
+          <app-file-upload (onFilesUpload)="onScriptUploaded($event)"></app-file-upload>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
 
-  <md-card class="bim-card right">
+  </mat-card>
+
+  <mat-card class="bim-card right">
     <div>
       <app-stream (onStreamStarted)="startJob($event)" (onStreamFinished)="finishJob($event)"></app-stream>
       <app-bim-list [items]="transactions"
@@ -75,5 +89,5 @@
                     (onCancelTransactionClicked)="cancelTransaction($event)">
       </app-bim-list>
     </div>
-  </md-card>
+  </mat-card>
 </div>
